@@ -1,70 +1,170 @@
-# Getting Started with Create React App
+# Game Theory Task
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Submitted by:** Devangi Gajjar  
+**Roll Number:** IIB2021037
 
-## Available Scripts
+This application allows customers to book sports facilities across various centers and enables managers to manage bookings efficiently. It utilizes **PostgreSQL** as the database, with **Prisma** as the ORM for database management.
 
-In the project directory, you can run:
+[Report](report.pdf)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Database Schema
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The app’s database schema is structured as follows:
 
-### `npm test`
+### User
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **userId:** `Int` (Primary Key, Auto-increment)
+- **name:** `String`
+- **email:** `String` (Unique)
+- **password:** `String`
+- **role:** `Role` (Enum, Default: CUSTOMER)
+- **mobileNumber:** `String`
+- **slots:** Relation to the Slot model
 
-### `npm run build`
+### Manager
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **managerId:** `Int` (Primary Key, Auto-increment)
+- **name:** `String`
+- **email:** `String` (Unique)
+- **password:** `String`
+- **role:** `Role` (Enum, Default: MANAGER)
+- **centre:** Relation to the Centre model
+- **centreId:** `Int` (Foreign Key)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Centre
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **centreId:** `Int` (Primary Key, Auto-increment)
+- **name:** `String`
+- **location:** `String`
+- **courts:** Relation to the Court model
+- **managers:** Relation to the Manager model
 
-### `npm run eject`
+### Court
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **courtId:** `Int` (Primary Key, Auto-increment)
+- **centre:** Relation to the Centre model
+- **centreId:** `Int` (Foreign Key)
+- **sport:** `Sports` (Enum)
+- **courtNumber:** `Int`
+- **slots:** Relation to the Slot model
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Slot
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **slotId:** `Int` (Primary Key, Auto-increment)
+- **court:** Relation to the Court model
+- **courtId:** `Int` (Foreign Key)
+- **isOccupied:** `Boolean` (Default: false)
+- **time:** `Int`
+- **date:** `DateTime`
+- **user:** Relation to the User model (Optional)
+- **userId:** `Int` (Foreign Key, Optional)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Enums
 
-## Learn More
+- **Sports:** BADMINTON, SWIMMING, TABLE_TENNIS, CRICKET, FOOTBALL
+- **Role:** CUSTOMER, MANAGER
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## API Endpoints
 
-### Code Splitting
+### Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **POST /customer/login:** Customer login
+- **POST /customer/register:** Customer registration
+- **POST /management/login:** Manager login
 
-### Analyzing the Bundle Size
+### Customer Operations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **GET /customer/slots:** View booked slots (requires authentication and `CUSTOMER` role)
+- **POST /customer/book:** Book a slot (requires authentication and `CUSTOMER` role)
+- **DELETE /:slotId:** Delete a booked slot (requires authentication)
+- **POST /customer/available:** View available slots (requires authentication and `CUSTOMER` role)
 
-### Making a Progressive Web App
+### Manager Operations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **POST /manager:** View center slots (requires authentication and `MANAGER` role)
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Deployment
 
-### Deployment
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- **Backend URL:** [https://game-theory-task-backend.onrender.com](https://game-theory-task-backend.onrender.com)
 
-### `npm run build` fails to minify
+### Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Frontend Customer URL:** [https://game-theory-task-frontend.vercel.app](https://game-theory-task-frontend.vercel.app)
+- **Frontend Manager URL:** [https://gtm-manager1-5gb0lylq1-rukia-ds-projects.vercel.app](https://gtm-manager1-5gb0lylq1-rukia-ds-projects.vercel.app)
+
+---
+
+## Running the Application
+
+### Backend (Express.js)
+
+1. Install dependencies:
+    npm i
+
+2. Setup .env
+    JWT_SECRET=<jwt_secret_value>
+    DATABASE_URL=<postgresql_database_connection_url>
+
+2. Start the server:
+    npm start
+
+3. The server will run on:  
+    `localhost:8006`
+
+### Frontend (React)
+
+1. Install dependencies:
+    npm i
+    
+2. Setup .env
+    REACT_APP_USER_ROLE="CUSTOMER" (For Customer View)
+    REACT_APP_USER_ROLE="MANAGER" (For Manager View)
+
+3. Start the frontend:
+    npm start
+    
+4. The app will run on:  
+    `localhost:3000`
+
+---
+
+## Tech Stack
+
+- **Frontend:** React with Axios for API integration
+- **Backend:** Express.js
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+
+---
+
+## Assumptions and Limitations
+
+1. **Authentication:**
+   - Authentication is fully functional on the backend but has not been implemented on the frontend due to time constraints.
+   - There are different hosted websites to access the webapp as a manager and as a customer, as a workaround.
+
+2. **Game Theory Centers and Sports:**
+   - The app operates with 7 predefined Game Theory center locations:
+     - 'Indira Nagar', 'HSR Layout', 'Electronic City', 'Whitefield', 'RT Nagar', 'Bagalur', and 'Kaggadasapura'
+   - The 5 available sports are:
+     - BADMINTON, SWIMMING, TABLE_TENNIS, CRICKET, FOOTBALL
+   - The number of fields/resources per game per center is randomly generated between 1 and 4.
+
+3. **User Types:**
+   - The app has two user types: **Customer** and **Manager**.
+   - Each center has a manager, and their credentials are pre-populated in the database.
+
+4. **Hosting:**
+   - The backend is hosted on **Render**, the frontend is hosted on **Vercel**, and the database on **Aiven**.
+   - Since free-tier hosting is being used, performance may be slower.
+
+5. **Role Authorization:**
+   - Middleware is implemented to ensure that customers and managers can only access their respective APIs.
