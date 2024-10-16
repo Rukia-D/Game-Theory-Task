@@ -8,6 +8,7 @@ const Sidebar = ({ onSelectPage }) => {
       <ul>
         <li onClick={() => onSelectPage('view')}>View My Bookings</li>
         <li onClick={() => onSelectPage('book')}>Book a Slot</li>
+        <li onClick={() => onSelectPage('schedule')}>Schedule</li> {/* Ensure this is included */}
       </ul>
     </div>
   );

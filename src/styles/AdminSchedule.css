@@ -1,0 +1,35 @@
+.schedule {
+    padding: 20px;
+  }
+  
+  .search-bar {
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .booked {
+    background-color: #ffcccb; /* Light red for booked slots */
+    cursor: not-allowed; /* Change cursor to indicate non-interactive */
+  }
+  
+  .available {
+    background-color: #dff0d8; /* Light green for available slots */
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8em; /* Smaller font for user info */
+  }
+  
