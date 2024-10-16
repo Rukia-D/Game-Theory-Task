@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../styles/BookSlot.css';
 import axios from 'axios';
 
@@ -15,8 +15,8 @@ const formatDateToYYYYMMDD = (date) => {
 };
 
 const BookSlot = () => {
-  const [location, setLocation] = useState('');
-  const [game, setGame] = useState('');
+  const [centreName, setcentreName] = useState('');
+  const [sportName, setsportName] = useState('');
   const [date, setDate] = useState('');
   const [slots, setSlots] = useState([]);  // Store the slots fetched from the API
 
@@ -24,29 +24,32 @@ const BookSlot = () => {
     try {
       const formattedDate = formatDateToYYYYMMDD(date);
       const response = await axios.post(
-        'http://localhost:8006/customer/available', 
-        { location, game, date: formattedDate },
+        'http://localhost:8006/api/v1/slots/customer/available', 
+        { centreName, sportName, date: formattedDate },
         {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token here
           },
         }
       );
-      setSlots(response.data.slots); // Assuming the response contains a `slots` array
+
+      // Set slots from the response
+      setSlots(response.data.timeSlots); // Now correctly setting timeSlots
     } catch (error) {
       console.error('Error fetching available slots:', error);
+      setSlots([]); // Reset to empty on error
     }
   };
 
-  const handleBooking = async (court, time) => {
+  const handleBooking = async (courtNumber, time) => {
     const confirmBooking = window.confirm(`Do you want to book the slot for ${time}?`);
 
     if (confirmBooking) {
       try {
         const formattedDate = formatDateToYYYYMMDD(date);
         await axios.post(
-          'http://localhost:8006/customer/book',
-          { location, game, date: formattedDate, time, court },
+          'http://localhost:8006/api/v1/slots/customer/book',
+          { centreName, sportName, date: formattedDate, time, courtNumber },
           {
             headers: {
               Authorization: `Bearer ${token}`, // Include the token here
@@ -57,8 +60,15 @@ const BookSlot = () => {
         // Update the slot status in the UI after successful booking
         setSlots((prevSlots) =>
           prevSlots.map((slot) =>
-            slot.time === time && slot.court === court
-              ? { ...slot, status: 'booked' }
+            slot.time === time
+              ? {
+                  ...slot,
+                  courts: slot.courts.map((court) =>
+                    court.courtNumber === courtNumber
+                      ? { ...court, status: 'booked' }
+                      : court
+                  ),
+                }
               : slot
           )
         );
@@ -75,15 +85,15 @@ const BookSlot = () => {
     <div className="book-slot">
       <h3>Book a Slot</h3>
       <div className="search-bar">
-        <select value={location} onChange={(e) => setLocation(e.target.value)}>
-          <option value="">Select Location</option>
-          <option value="hsr">HSR Layout</option>
+        <select value={centreName} onChange={(e) => setcentreName(e.target.value)}>
+          <option value="">Select centreName</option>
+          <option value="Indira Nagar">HSR Layout</option>
           <option value="koramangala">Koramangala</option>
         </select>
 
-        <select value={game} onChange={(e) => setGame(e.target.value)}>
-          <option value="">Select Game</option>
-          <option value="badminton">Badminton</option>
+        <select value={sportName} onChange={(e) => setsportName(e.target.value)}>
+          <option value="">Select sportName</option>
+          <option value="SWIMMING">Badminton</option>
           <option value="tennis">Tennis</option>
         </select>
 
@@ -102,31 +112,21 @@ const BookSlot = () => {
             <th>Time</th>
             <th>Court 1</th>
             <th>Court 2</th>
-            <th>Court 3</th>
           </tr>
         </thead>
         <tbody>
           {slots.map((slot, index) => (
             <tr key={index}>
-              <td>{slot.time}</td>
-              <td
-                className={slot.court1.status === 'booked' ? 'booked' : 'available'}
-                onClick={() => slot.court1.status === 'available' && handleBooking('Court 1', slot.time)}
-              >
-                {slot.court1.status}
-              </td>
-              <td
-                className={slot.court2.status === 'booked' ? 'booked' : 'available'}
-                onClick={() => slot.court2.status === 'available' && handleBooking('Court 2', slot.time)}
-              >
-                {slot.court2.status}
-              </td>
-              <td
-                className={slot.court3.status === 'booked' ? 'booked' : 'available'}
-                onClick={() => slot.court3.status === 'available' && handleBooking('Court 3', slot.time)}
-              >
-                {slot.court3.status}
-              </td>
+                <td>{slot.time}</td>
+                {slot.courts.map((court) => (
+                  <td
+                  key={court.courtNumber}
+                  className={court.status === 'booked' ? 'booked' : 'available'}
+                  onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
+                >
+                  {court.status === 'booked' ? 'Booked' : '+'}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
