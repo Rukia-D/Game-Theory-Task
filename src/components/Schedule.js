@@ -12,7 +12,7 @@ const Schedule = () => {
   
   const fetchBookings = async () => {
     try {
-      const response = await axios.post('http://localhost:8006/api/v1/slots/manager', {
+      const response = await axios.post('https://game-theory-task-backend.onrender.com/api/v1/slots/manager', {
         sportName,
         date: selectedDate,
       }, {
