@@ -1,0 +1,14 @@
+/* App.css */
+.app {
+  display: flex; /* Use flexbox for layout */
+}
+
+.sidebar {
+  width: 250px; /* Fixed width for sidebar */
+}
+
+.content {
+  flex: 1; /* Main content will take up the remaining space */
+  padding: 20px;
+  background-color: #f5f5f5; /* Light background to distinguish content */
+}
