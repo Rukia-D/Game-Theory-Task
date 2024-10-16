@@ -14,6 +14,16 @@ const formatDateToYYYYMMDD = (date) => {
   return `${year}-${month}-${day}`;
 };
 
+// Constants for dropdowns
+const CENTRES_ORDER = ['Indira Nagar', 'HSR Layout', 'Electronic City', 'Whitefield', 'RT Nagar', 'Bagalur', 'Kaggadasapura'];
+const SPORTS_ENUM = {
+    BADMINTON: 'BADMINTON',
+    SWIMMING: 'SWIMMING',
+    CRICKET: 'CRICKET',
+    TABLE_TENNIS: 'TABLE_TENNIS',
+    FOOTBALL: 'FOOTBALL'
+};
+
 const BookSlot = () => {
   const [centreName, setcentreName] = useState('');
   const [sportName, setsportName] = useState('');
@@ -41,48 +51,6 @@ const BookSlot = () => {
     }
   };
 
-  // const handleBooking = async (courtNumber, time) => {
-  //   const confirmBooking = window.confirm(`Do you want to book the slot for ${time.split(':')[0]}?`);
-  
-  //   if (confirmBooking) {
-  //     try {
-  //       const formattedDate = formatDateToYYYYMMDD(date);
-  //       const formattedTime = parseInt(time.split(':')[0], 10); // Extract the hour part and convert to integer
-  
-  //       await axios.post(
-  //         'http://localhost:8006/api/v1/slots/customer/book',
-  //         { centreName, sportName, date: formattedDate, time: formattedTime, courtNumber }, // Send formattedTime as integer
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`, // Include the token here
-  //           },
-  //         }
-  //       );
-  
-  //       // Update the slot status in the UI after successful booking
-  //       setSlots((prevSlots) =>
-  //         prevSlots.map((slot) =>
-  //           slot.time === time
-  //             ? {
-  //                 ...slot,
-  //                 courts: slot.courts.map((court) =>
-  //                   court.courtNumber === courtNumber
-  //                     ? { ...court, status: 'booked' }
-  //                     : court
-  //                 ),
-  //               }
-  //             : slot
-  //         )
-  //       );
-  
-  //       alert('Slot successfully booked!');
-  //     } catch (error) {
-  //       console.error('Error booking the slot:', error);
-  //       alert('Failed to book the slot');
-  //     }
-  //   }
-  // };
-  
   const handleBooking = async (courtNumber, time) => {
     const confirmBooking = window.confirm(`Do you want to book the slot for ${time.split(':')[0]}?`);
   
@@ -90,7 +58,7 @@ const BookSlot = () => {
       try {
         const formattedDate = formatDateToYYYYMMDD(date);
         const formattedTime = parseInt(time.split(':')[0], 10); // Extract the hour part and convert to integer
-  
+
         // Send the booking request to the backend
         await axios.post(
           'http://localhost:8006/api/v1/slots/customer/book',
@@ -101,7 +69,7 @@ const BookSlot = () => {
             },
           }
         );
-  
+
         // Re-fetch the available slots to reflect the latest state after booking
         fetchAvailableSlots();  // This will re-fetch the slots from the backend
   
@@ -113,21 +81,22 @@ const BookSlot = () => {
     }
   };
     
-
   return (
     <div className="book-slot">
       <h3>Book a Slot</h3>
       <div className="search-bar">
         <select value={centreName} onChange={(e) => setcentreName(e.target.value)}>
-          <option value="">Select centreName</option>
-          <option value="Indira Nagar">HSR Layout</option>
-          <option value="koramangala">Koramangala</option>
+          <option value="">Select Centre</option>
+          {CENTRES_ORDER.map((centre, index) => (
+            <option key={index} value={centre}>{centre}</option>
+          ))}
         </select>
 
         <select value={sportName} onChange={(e) => setsportName(e.target.value)}>
-          <option value="">Select sportName</option>
-          <option value="SWIMMING">Badminton</option>
-          <option value="tennis">Tennis</option>
+          <option value="">Select Sport</option>
+          {Object.entries(SPORTS_ENUM).map(([key, value]) => (
+            <option key={key} value={value}>{value}</option>
+          ))}
         </select>
 
         <input
