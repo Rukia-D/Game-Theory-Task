@@ -41,38 +41,70 @@ const BookSlot = () => {
     }
   };
 
+  // const handleBooking = async (courtNumber, time) => {
+  //   const confirmBooking = window.confirm(`Do you want to book the slot for ${time.split(':')[0]}?`);
+  
+  //   if (confirmBooking) {
+  //     try {
+  //       const formattedDate = formatDateToYYYYMMDD(date);
+  //       const formattedTime = parseInt(time.split(':')[0], 10); // Extract the hour part and convert to integer
+  
+  //       await axios.post(
+  //         'http://localhost:8006/api/v1/slots/customer/book',
+  //         { centreName, sportName, date: formattedDate, time: formattedTime, courtNumber }, // Send formattedTime as integer
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`, // Include the token here
+  //           },
+  //         }
+  //       );
+  
+  //       // Update the slot status in the UI after successful booking
+  //       setSlots((prevSlots) =>
+  //         prevSlots.map((slot) =>
+  //           slot.time === time
+  //             ? {
+  //                 ...slot,
+  //                 courts: slot.courts.map((court) =>
+  //                   court.courtNumber === courtNumber
+  //                     ? { ...court, status: 'booked' }
+  //                     : court
+  //                 ),
+  //               }
+  //             : slot
+  //         )
+  //       );
+  
+  //       alert('Slot successfully booked!');
+  //     } catch (error) {
+  //       console.error('Error booking the slot:', error);
+  //       alert('Failed to book the slot');
+  //     }
+  //   }
+  // };
+  
   const handleBooking = async (courtNumber, time) => {
-    const confirmBooking = window.confirm(`Do you want to book the slot for ${time}?`);
-
+    const confirmBooking = window.confirm(`Do you want to book the slot for ${time.split(':')[0]}?`);
+  
     if (confirmBooking) {
       try {
         const formattedDate = formatDateToYYYYMMDD(date);
+        const formattedTime = parseInt(time.split(':')[0], 10); // Extract the hour part and convert to integer
+  
+        // Send the booking request to the backend
         await axios.post(
           'http://localhost:8006/api/v1/slots/customer/book',
-          { centreName, sportName, date: formattedDate, time, courtNumber },
+          { sportName, date: formattedDate, time: formattedTime, courtNumber, centreName },
           {
             headers: {
               Authorization: `Bearer ${token}`, // Include the token here
             },
           }
         );
-
-        // Update the slot status in the UI after successful booking
-        setSlots((prevSlots) =>
-          prevSlots.map((slot) =>
-            slot.time === time
-              ? {
-                  ...slot,
-                  courts: slot.courts.map((court) =>
-                    court.courtNumber === courtNumber
-                      ? { ...court, status: 'booked' }
-                      : court
-                  ),
-                }
-              : slot
-          )
-        );
-
+  
+        // Re-fetch the available slots to reflect the latest state after booking
+        fetchAvailableSlots();  // This will re-fetch the slots from the backend
+  
         alert('Slot successfully booked!');
       } catch (error) {
         console.error('Error booking the slot:', error);
@@ -80,6 +112,7 @@ const BookSlot = () => {
       }
     }
   };
+    
 
   return (
     <div className="book-slot">
@@ -121,10 +154,10 @@ const BookSlot = () => {
                 {slot.courts.map((court) => (
                   <td
                   key={court.courtNumber}
-                  className={court.status === 'booked' ? 'booked' : 'available'}
+                  className={court.status === 'occupied' ? 'booked' : 'available'}
                   onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
                 >
-                  {court.status === 'booked' ? 'Booked' : '+'}
+                  {court.status === 'occupied' ? 'Booked' : '+'}
                 </td>
               ))}
             </tr>

@@ -46,12 +46,13 @@ th, td {
 
 
 .booked {
-  color: red;
+  color: black;
+
   font-weight: bold;
 }
 
 .available {
-  background-color: grey;
+  background-color: rgb(210, 206, 206);
   font-size: 20px;
   cursor: pointer;
 }
