@@ -34,7 +34,7 @@ const BookSlot = () => {
     try {
       const formattedDate = formatDateToYYYYMMDD(date);
       const response = await axios.post(
-        'http://localhost:8006/api/v1/slots/customer/available', 
+        'https://game-theory-task-backend.onrender.com/api/v1/slots/customer/available', 
         { centreName, sportName, date: formattedDate },
         {
           headers: {
@@ -61,7 +61,7 @@ const BookSlot = () => {
 
         // Send the booking request to the backend
         await axios.post(
-          'http://localhost:8006/api/v1/slots/customer/book',
+          'https://game-theory-task-backend.onrender.com/api/v1/slots/customer/book',
           { sportName, date: formattedDate, time: formattedTime, courtNumber, centreName },
           {
             headers: {
@@ -80,7 +80,13 @@ const BookSlot = () => {
       }
     }
   };
-    
+
+  // Function to get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0]; // Get the date part only
+  };
+
   return (
     <div className="book-slot">
       <h3>Book a Slot</h3>
@@ -102,6 +108,7 @@ const BookSlot = () => {
         <input
           type="date"
           value={date}
+          min={getTodayDate()} // Disable dates before today
           onChange={(e) => setDate(e.target.value)}
         />
         <button onClick={fetchAvailableSlots}>Search</button>
@@ -109,62 +116,37 @@ const BookSlot = () => {
 
       {/* Table for available slots */}
       {centreName && sportName && date ? (
-      // <table>
-      //   <thead>
-      //     <tr>
-      //       <th>Time</th>
-      //       <th>Court 1</th>
-      //       <th>Court 2</th>
-      //     </tr>
-      //   </thead>
-      //   <tbody>
-      //     {slots.map((slot, index) => (
-      //       <tr key={index}>
-      //           <td>{slot.time}</td>
-      //           {slot.courts.map((court) => (
-      //             <td
-      //             key={court.courtNumber}
-      //             className={court.status === 'occupied' ? 'booked' : 'available'}
-      //             onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
-      //           >
-      //             {court.status === 'occupied' ? 'Booked' : '+'}
-      //           </td>
-      //         ))}
-      //       </tr>
-      //     ))}
-      //   </tbody>
-      // </table>
-      <table>
-  <thead>
-    <tr>
-      <th>Time</th>
-      {slots.length > 0 && slots[0].courts.map((court) => (
-        <th key={court.courtNumber}>Court {court.courtNumber}</th>
-      ))}
-    </tr>
-  </thead>
-  <tbody>
-    {slots.map((slot, index) => (
-      <tr key={index}>
-        <td>{slot.time}</td>
-        {slot.courts.map((court) => (
-          <td
-            key={court.courtNumber}
-            className={court.status === 'occupied' ? 'booked' : 'available'}
-            onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
-          >
-            {court.status === 'occupied' ? 'Booked' : '+'}
-          </td>
-        ))}
-      </tr>
-    ))}
-  </tbody>
-</table>
-
-    ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              {slots.length > 0 && slots[0].courts.map((court) => (
+                <th key={court.courtNumber}>Court {court.courtNumber}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {slots.map((slot, index) => (
+              <tr key={index}>
+                <td>{slot.time}</td>
+                {slot.courts.map((court) => (
+                  <td
+                    key={court.courtNumber}
+                    className={court.status === 'occupied' ? 'booked' : 'available'}
+                    onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
+                  >
+                    {court.status === 'occupied' ? 'Booked' : '+'}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
         <p>Please select a centre, sport, and date to view available slots.</p>
       )}
     </div>
   );
 };
+
 export default BookSlot;

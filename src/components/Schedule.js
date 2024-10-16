@@ -73,14 +73,13 @@ const Schedule = () => {
                   <td key={court.courtNumber} className={court.status === 'occupied' ? 'booked' : 'available'}>
                     {court.status === 'occupied' ? (
                       <div>
-                        {/* <span>Booked</span> */}
                         <div className="user-info">
                           <small>{court.userInfo.name}</small>
                           <small>{court.userInfo.email}</small>
                         </div>
                       </div>
                     ) : (
-                      <span></span>
+                      <span>Free</span> // Optional: Add a "Free" text to indicate availability
                     )}
                   </td>
                 ))}

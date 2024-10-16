@@ -13,7 +13,7 @@ const ViewBookings = () => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const response = await axios.get('http://localhost:8006/api/v1/slots/customer/slots', {
+                const response = await axios.get('https://game-theory-task-backend.onrender.com/api/v1/slots/customer/slots', {
                     headers: {
                         Authorization: `Bearer ${token}`, // Include the token here
                     },

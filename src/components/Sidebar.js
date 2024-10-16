@@ -13,8 +13,13 @@ const Sidebar = ({ onSelectPage, user }) => {
       <div className="bookings-section">
         <h3 className="section-heading">Bookings</h3>
         <ul>
-          <li onClick={() => onSelectPage('view')}>View My Bookings</li>
-          <li onClick={() => onSelectPage('book')}>Book a Slot</li>
+        {role !== 'MANAGER' && (
+          <>
+            <li onClick={() => onSelectPage('view')}>View My Bookings</li>
+            <li onClick={() => onSelectPage('book')}>Book a Slot</li>
+            </>
+          )}
+          
           {role === 'MANAGER' && (
             <li onClick={() => onSelectPage('schedule')}>Schedule</li>
           )}

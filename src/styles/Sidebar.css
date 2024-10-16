@@ -1,6 +1,6 @@
 /* Sidebar.css */
 .sidebar {
-  /* height: 100vh; */
+  height: 800vh;
   background-color: #1f2b3d; /* Existing background color */
   color: white; /* Text color */
   padding: 20px; /* Padding for the sidebar */
