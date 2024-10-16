@@ -1,25 +1,59 @@
+/* Sidebar.css */
 .sidebar {
-  height: 100vh;
-  background-color: #1f2b3d;
-  color: white;
-  padding: 20px;
+  /* height: 100vh; */
+  background-color: #1f2b3d; /* Existing background color */
+  color: white; /* Text color */
+  padding: 20px; /* Padding for the sidebar */
 }
 
 .sidebar h2 {
-  font-size: 1.5em;
-  margin-bottom: 20px;
+  font-size: 1.5em; /* Title font size */
+  margin-bottom: 20px; /* Space below the title */
+}
+
+.section-heading {
+  font-weight: bold; /* Make section headings bold */
+  font-size: 1.2em; /* Font size for headings */
+  margin: 15px 0; /* Margin for spacing above/below headings */
+  padding: 10px 0; /* Padding for the heading */
+  color: #f0f0f0; /* Lighter color for headings */
 }
 
 .sidebar ul {
-  list-style: none;
-  padding: 0;
+  list-style: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
 }
 
 .sidebar ul li {
-  padding: 10px 0;
-  cursor: pointer;
+  padding: 10px 0; /* Padding for list items */
+  cursor: pointer; /* Show pointer cursor on hover */
 }
 
 .sidebar ul li:hover {
-  background-color: #33475b;
+  background-color: #33475b; /* Hover background color */
+}
+
+.bookings-section ul {
+  padding-left: 0; /* Remove default padding */
+}
+
+.profile-section {
+  margin-top: 20px; /* Space between bookings and profile */
+  padding: 10px; /* Padding around profile section */
+  background-color: #33475b; /* Background color for profile section */
+  border-radius: 5px; /* Rounded corners for profile section */
+  text-align: center; /* Center text in the profile section */
+}
+
+.profile-section h4 {
+  margin: 0; /* Remove margin for name */
+  font-size: 1.2em; /* Font size for name */
+  text-align: left;
+}
+
+.profile-section p {
+  margin: 2px 0; /* Space between profile items */
+  text-align: left;
+  font-size: 0.9em; /* Font size for email and role */
+  color: #e0e0e0; /* Slightly lighter color for profile text */
 }
