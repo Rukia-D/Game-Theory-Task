@@ -108,33 +108,63 @@ const BookSlot = () => {
       </div>
 
       {/* Table for available slots */}
+      {centreName && sportName && date ? (
+      // <table>
+      //   <thead>
+      //     <tr>
+      //       <th>Time</th>
+      //       <th>Court 1</th>
+      //       <th>Court 2</th>
+      //     </tr>
+      //   </thead>
+      //   <tbody>
+      //     {slots.map((slot, index) => (
+      //       <tr key={index}>
+      //           <td>{slot.time}</td>
+      //           {slot.courts.map((court) => (
+      //             <td
+      //             key={court.courtNumber}
+      //             className={court.status === 'occupied' ? 'booked' : 'available'}
+      //             onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
+      //           >
+      //             {court.status === 'occupied' ? 'Booked' : '+'}
+      //           </td>
+      //         ))}
+      //       </tr>
+      //     ))}
+      //   </tbody>
+      // </table>
       <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Court 1</th>
-            <th>Court 2</th>
-          </tr>
-        </thead>
-        <tbody>
-          {slots.map((slot, index) => (
-            <tr key={index}>
-                <td>{slot.time}</td>
-                {slot.courts.map((court) => (
-                  <td
-                  key={court.courtNumber}
-                  className={court.status === 'occupied' ? 'booked' : 'available'}
-                  onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
-                >
-                  {court.status === 'occupied' ? 'Booked' : '+'}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <thead>
+    <tr>
+      <th>Time</th>
+      {slots.length > 0 && slots[0].courts.map((court) => (
+        <th key={court.courtNumber}>Court {court.courtNumber}</th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {slots.map((slot, index) => (
+      <tr key={index}>
+        <td>{slot.time}</td>
+        {slot.courts.map((court) => (
+          <td
+            key={court.courtNumber}
+            className={court.status === 'occupied' ? 'booked' : 'available'}
+            onClick={() => court.status === 'free' && handleBooking(court.courtNumber, slot.time)}
+          >
+            {court.status === 'occupied' ? 'Booked' : '+'}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+    ) : (
+        <p>Please select a centre, sport, and date to view available slots.</p>
+      )}
     </div>
   );
 };
-
 export default BookSlot;
